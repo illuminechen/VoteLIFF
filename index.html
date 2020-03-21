@@ -1,0 +1,158 @@
+﻿<html>
+	<head>
+		<base target="_top">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>請選擇</title>
+
+		<!--Fontawesome CDN-->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+		<style>
+			.optdiv {
+			  display:table;
+			  width: 100%;
+			}
+			
+			
+			.opt {
+				text-align:center;
+				background-color:yellow;
+				display: table-cell; 
+				vertical-align: middle;
+				font-size:20px;
+				cursor:pointer;
+			}
+			
+			.chosen {
+				background-color:darkblue;
+				color:white;
+			}
+			
+			.q {
+				text-align:center;
+				background-color:blue;
+				color:white;
+			}
+		</style>
+	</head>
+	  <body style="margin:0px;padding:0px;overflow:hidden">
+	  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+	  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+	  
+	  <div class="container">
+		<div id="questioncontainer" class="row my-2">
+		</div>
+		<div id="optcontainer">
+		</div>
+	  </div>	    	
+  
+	<script>
+	let info = {};
+	let vote = -1;
+	let gpid = "Ceceaf1587ded9b0a2023328de34b612c";
+	let userid = "Ubcc3072d00816610bb4301ffb542e103";
+	function getInfo()
+	{
+		$.get("https://script.google.com/macros/s/AKfycbzhYCyX9MR7oogP2d5gA8yLpOf0lnPxua_cgQ0jl_koauTpYdY/exec", {method:"vote", gpid:gpid, userid:userid },function(data,status,xhr){
+			info = JSON.parse(data);
+			if(typeof info.error !=='undefined')
+			{
+				$("#cardcontainer").html(info.error);
+			}
+			else 
+			{
+				$("#questioncontainer").html("<div class='q col-11'>Q"+info.no+":"+info.question.name+"</div>");
+				
+				let sendbtn = $("<button onclick='send()'>送出</button>");
+				$("#questioncontainer").append(sendbtn);
+				
+				$("#optcontainer").empty();
+				
+				for(let i=0;i<info.answers.length;i++)
+				{
+					let opt = $("<div class='card opt' oid='"+(i+1)+"' style='width:100%'>"+(i+1)+"."+info.answers[i]+"</div>");
+					let optdiv = $("<div class='optdiv' ></div>");
+					opt.click(function(){
+						if($(this).hasClass("chosen"))
+						{
+							$(this).removeClass("chosen");
+							vote = -1;
+						}
+						else	
+						{
+							$(".opt").removeClass("chosen");
+							$(this).addClass("chosen");
+							vote = $(this).attr('oid');
+						}
+					});
+
+					optdiv.append(opt);
+					$("#optcontainer").append(optdiv);
+					
+				}								
+			}
+		});
+	}
+
+	function send()
+	{
+		if(vote!=-1)
+		{
+			$.post("https://script.google.com/macros/s/AKfycbzhYCyX9MR7oogP2d5gA8yLpOf0lnPxua_cgQ0jl_koauTpYdY/exec", {method:"vote", gpid:gpid, userid:userid,vote:vote },
+			function(data,status,xhr){
+				let d = JSON.parse(data);
+				if(d.result)
+				{
+					finish();
+				}
+				else 
+				{
+					alert("有點問題");
+				}
+			});
+		}
+	}
+	
+	function finish()
+	{
+		liff.sendMessages([{"type":"text","text":"選好了"}])
+		.then(() => {
+			liff.closeWindow();
+			})
+		.catch((err) => {});				  
+	}
+			  		getInfo();
+
+	$(document).ready(function(){			
+		
+		liff.init(
+		  data => {
+				const urlParams = new URLSearchParams(window.location.search);				
+			    gpid = urlParams.get('gpid');
+				userid = data.context.userId;                   
+		  		getInfo();
+
+
+				/*
+				// Now you can call LIFF API
+				const userId = data.context.userId;                   
+				liff.getProfile()
+				.then(profile => {
+				  const name = profile.displayName;
+				})
+				.catch((err) => {
+				});
+				*/
+				
+		},
+		  err => {
+		  }
+		);
+	});
+		</script>
+	</body>
+</html>
