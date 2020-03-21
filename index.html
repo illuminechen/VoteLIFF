@@ -79,7 +79,6 @@
 					let optdiv = $("<div class='optdiv' ></div>");
 					if(info.mine == (i+1))
 					{
-						opt.prop("disabled",true);
 						opt.css('background-color','gray');
 					}
 					opt.click(function(){
@@ -90,9 +89,12 @@
 						}
 						else	
 						{
-							$(".opt").removeClass("chosen");
-							$(this).addClass("chosen");
-							vote = $(this).attr('oid');
+							if(info.mine != $(this).attr('oid'))
+							{
+								$(".opt").removeClass("chosen");
+								$(this).addClass("chosen");
+								vote = $(this).attr('oid');
+							}
 						}
 					});
 
