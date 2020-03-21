@@ -74,8 +74,14 @@
 				
 				for(let i=0;i<info.answers.length;i++)
 				{
+					
 					let opt = $("<div class='card opt' oid='"+(i+1)+"' style='width:100%'>"+(i+1)+"."+info.answers[i]+"</div>");
 					let optdiv = $("<div class='optdiv' ></div>");
+					if(info.mine == (i+1))
+					{
+						opt.prop("disabled",true);
+						opt.css('background-color','gray');
+					}
 					opt.click(function(){
 						if($(this).hasClass("chosen"))
 						{
