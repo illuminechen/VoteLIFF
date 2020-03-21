@@ -53,8 +53,8 @@
 	<script>
 	let info = {};
 	let vote = -1;
-	let gpid = "Ceceaf1587ded9b0a2023328de34b612c";
-	let userid = "Ubcc3072d00816610bb4301ffb542e103";
+	let gpid;// = "Ceceaf1587ded9b0a2023328de34b612c";
+	let userid;// = "Ubcc3072d00816610bb4301ffb542e103";
 	function getInfo()
 	{
 		$.get("https://script.google.com/macros/s/AKfycbzhYCyX9MR7oogP2d5gA8yLpOf0lnPxua_cgQ0jl_koauTpYdY/exec", {method:"vote", gpid:gpid, userid:userid },function(data,status,xhr){
