@@ -41,7 +41,7 @@
 	  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	  <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+	  <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
 	  
 	  <div class="container">
 		<div id="questioncontainer" class="row my-2">
@@ -135,30 +135,16 @@
 	}
 
 	$(document).ready(function(){			
-		
-		liff.init(
-		  data => {
-				const urlParams = new URLSearchParams(window.location.search);				
-			    gpid = urlParams.get('gpid');
-				userid = data.context.userId;                   
-		  		getInfo();
-
-
-				/*
-				// Now you can call LIFF API
-				const userId = data.context.userId;                   
-				liff.getProfile()
-				.then(profile => {
-				  const name = profile.displayName;
-				})
-				.catch((err) => {
-				});
-				*/
-				
-		},
-		  err => {
-		  }
-		);
+		const urlParams = new URLSearchParams(window.location.search);				
+		let liffId = urlParams.get('liffId');
+		liff
+		  .init({
+			liffId: liffId
+		  }).then(() => {
+			gpid = urlParams.get('gpid');
+			userid = data.context.userId;                   
+			getInfo();
+		  )	
 	});
 		</script>
 	</body>
