@@ -135,8 +135,9 @@
 	}
 
 	$(document).ready(function(){			
-		const urlParams = new URLSearchParams(window.location.search);				
-		let liffId = urlParams.get('liffId');
+	    let urlParams = new URLSearchParams(window.location.search);
+	    const params = urlParams.has('liff.state')? new URLSearchParams(urlParams.get('liff.state')) : urlParams;
+		let liffId = params.get('liffId');
 		liff
 		  .init({
 			liffId: liffId
