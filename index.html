@@ -141,9 +141,22 @@
 		  .init({
 			liffId: liffId
 		  }).then(() => {
-			gpid = urlParams.get('gpid');
-			userid = data.context.userId;                   
-			getInfo();
+			if (liff.isLoggedIn()) {
+			liff.getProfile()
+				.then(profile => {
+					gpid = urlParams.get('gpid');
+					userid = profile.userId;                   
+					getInfo();
+				})
+				.catch((err) => {
+				  console.log('error', err);
+				});
+
+			}
+			else 
+			{
+				liff.login({redirectUri:window.location.href});
+			}
 		  )	
 	});
 		</script>
